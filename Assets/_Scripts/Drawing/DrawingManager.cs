@@ -12,6 +12,8 @@ namespace Drawing
         [SerializeField] private float _radius = 10f;
 
         [SerializeField] private float _duration = 1f;
+        [SerializeField] private Color _innerDiscColor;
+        [SerializeField] private Color _outerDiscColor;
 
         private List<SonarDisc> _sonarDiscs;
 
@@ -39,13 +41,27 @@ namespace Drawing
             {
                 Draw.LineGeometry = LineGeometry.Volumetric3D;
                 Draw.ThicknessSpace = ThicknessSpace.Meters;
-                Draw.Thickness = .1f;
 
                 Draw.Matrix = transform.localToWorldMatrix;
+
+
                 foreach (SonarDisc disc in _sonarDiscs)
                 {
-                    if (!disc.Animating) continue;
-                    Draw.Ring(disc.Position, Quaternion.Euler(Vector3.right * 90f), disc.CurrentSize, Color.black);
+                    if (!disc.IsAnimating) continue;
+
+                    Draw.Thickness = Mathf.Min(5f, disc.CurrentSize);
+
+                    _innerDiscColor.a = Mathf.Min(disc.CurrentAlpha, 0f);
+                    _outerDiscColor.a = Mathf.Min(disc.CurrentAlpha, 1f);
+
+                    var colors = new DiscColors() {
+                        innerStart = _innerDiscColor,
+                        innerEnd = _innerDiscColor,
+                        outerStart = _outerDiscColor,
+                        outerEnd = _outerDiscColor,
+                    };
+
+                    Draw.Ring(disc.Position, Quaternion.Euler(Vector3.right * 90f), disc.CurrentSize, colors);
                 }
             }
         }
@@ -54,7 +70,7 @@ namespace Drawing
         {
             foreach (SonarDisc disc in _sonarDiscs)
             {
-                if (disc.Animating) continue;
+                if (disc.IsAnimating) continue;
                 disc.Draw(null, target.position);
                 return;
             }

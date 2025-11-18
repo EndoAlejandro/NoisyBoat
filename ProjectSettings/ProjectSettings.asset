@@ -840,7 +840,7 @@ PlayerSettings:
     ReservedCFE: DOTWEEN
     Standalone: SHAPES_URP;DOTWEEN
     VisionOS: DOTWEEN
-    WebGL: DOTWEEN
+    WebGL: DOTWEEN;SHAPES_URP
     Windows Store Apps: DOTWEEN
     XboxOne: DOTWEEN
     iPhone: DOTWEEN
@@ -942,7 +942,7 @@ PlayerSettings:
   qnxGraphicConfPath: 
   apiCompatibilityLevel: 6
   captureStartupLogs: {}
-  activeInputHandler: 1
+  activeInputHandler: 2
   windowsGamepadBackendHint: 0
   cloudProjectId: 2a6d343b-32dc-4ec6-8be0-4623d49f0686
   framebufferDepthMemorylessMode: 0

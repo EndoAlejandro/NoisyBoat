@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using PlayerComponents;
 using Shapes;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Enemies
 {
@@ -8,18 +10,29 @@ namespace Enemies
     {
         public Transform PlayerTransform { get; private set; }
 
+        [Header("Movement")]
+        [SerializeField] private LayerMask _playerLayerMask;
+
         [SerializeField] private float _playerDetectionRadius = 5f;
         [SerializeField] private float _maxSpeed = 1f;
         [SerializeField] private float _turnSpeed = 1f;
         [SerializeField] private float _acceleration = 10f;
         [SerializeField] private float _deceleration = 20f;
 
-        [SerializeField] private int _nodesAmount = 5;
+        [Header("Visuals")]
+        [ColorUsage(true, false)] [SerializeField]
+        private Color _color;
 
-        [SerializeField] private float _speed = 1f;
-        [SerializeField] private float _radius = 1f;
+        [SerializeField] private AnimationCurve _sizeCurve;
 
-        [SerializeField] private LayerMask _playerLayerMask;
+        [FormerlySerializedAs("_revert")] [SerializeField]
+        private bool _reverseCurve;
+
+        [SerializeField] private int _nodesAmount = 10;
+
+        [SerializeField] private float _nodeFollowSpeed = 1f;
+
+        [SerializeField] private float _nodeMaxRadius = 1f;
 
         private SphereCollider _collider;
         private Rigidbody _rigidbody;
@@ -42,23 +55,20 @@ namespace Enemies
 
             foreach (SharkNode node in _nodes)
             {
-                node.SetSpeed(_speed);
+                node.SetSpeed(_nodeFollowSpeed);
             }
         }
 
         private void Start()
         {
-            _collider.radius = _radius;
-
             for (int i = 0; i < _nodesAmount; i++)
             {
-                var node = new SharkNode(transform.position, _radius, _speed);
-                if (i > 0)
-                {
-                    node.SetHead(_nodes[^1]);
-                }
+                var node = new SharkNode(transform.position, GetRadius(i), _nodeFollowSpeed);
+                if (i > 0) node.SetHead(_nodes[^1]);
                 _nodes.Add(node);
             }
+            
+            _collider.radius = GetRadius(0);
         }
 
         private void Update()
@@ -81,7 +91,7 @@ namespace Enemies
 
             for (int i = 0; i < size; i++)
             {
-                if (_results[i].TryGetComponent(out PlayerController controller))
+                if (_results[i].TryGetComponent(out Player controller))
                 {
                     PlayerTransform = controller.transform;
                     break;
@@ -100,9 +110,17 @@ namespace Enemies
             for (int i = 1; i < _nodes.Count; i++)
             {
                 SharkNode node = _nodes[i];
-                node.SetMaxDistance(_radius * (1f - i / (float)_nodes.Count));
+                var radius = GetRadius(i);
+                node.SetMaxDistance(radius);
                 node.Tick();
             }
+        }
+
+        private float GetRadius(int i)
+        {
+            var normalizedValue = _reverseCurve ? 1 - i / (float)_nodes.Count : i / (float)_nodes.Count;
+            var radius = _sizeCurve.Evaluate(normalizedValue);
+            return radius;
         }
 
         public void Move(Vector3 movement)
@@ -128,14 +146,15 @@ namespace Enemies
         {
             using (Draw.Command(cam))
             {
+                Draw.BlendMode = ShapesBlendMode.Transparent;
                 Draw.LineGeometry = LineGeometry.Volumetric3D;
                 Draw.ThicknessSpace = ThicknessSpace.Meters;
-                Draw.Thickness = 1f;
 
                 for (var i = 0; i < _nodes.Count; i++)
                 {
                     SharkNode node = _nodes[i];
-                    Draw.Sphere(node.Position, _radius - i / (float)_nodes.Count, Color.black);
+                    var radius = GetRadius(i);
+                    Draw.Sphere(node.Position, radius, _color);
                 }
             }
         }

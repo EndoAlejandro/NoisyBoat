@@ -9,8 +9,9 @@ namespace Drawing
         public Vector3 Position { get; private set; }
 
         public float CurrentSize { get; private set; }
+        public float CurrentAlpha { get; private set; }
 
-        public bool Animating { get; private set; }
+        public bool IsAnimating { get; private set; }
 
         private readonly float _maxSize;
         private readonly float _duration;
@@ -26,13 +27,16 @@ namespace Drawing
         {
             Position = positionOverride ?? Position;
             CurrentSize = 0f;
-            Animating = true;
-            
+            CurrentAlpha = 1f;
+            IsAnimating = true;
+
+            DOTween.To(() => CurrentAlpha, x => CurrentAlpha = x, 0f, _duration)
+                .SetEase(Ease.OutSine);
             DOTween.To(() => CurrentSize, x => CurrentSize = x, _maxSize, _duration)
-                .SetEase(Ease.InOutSine)
+                .SetEase(Ease.OutSine)
                 .OnComplete(() =>
                 {
-                    Animating = false;
+                    IsAnimating = false;
                     onComplete?.Invoke();
                 });
         }
