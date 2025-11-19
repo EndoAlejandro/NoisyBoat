@@ -1,4 +1,5 @@
-﻿using StateMachineComponents;
+﻿using PlayerComponents;
+using StateMachineComponents;
 using UnityEngine;
 
 namespace Enemies
@@ -35,13 +36,18 @@ namespace Enemies
             }
         }
 
-        public void OnEnter() => _target = _shark.transform.position;
+        public void OnEnter()
+        {
+            _shark.SetState(isChasing: false);
+            _target = _shark.transform.position;
+        }
 
         private void ResetTarget()
         {
             _timer = _idleTime;
-            var random = Random.insideUnitCircle.normalized * 10f;
-            _target = new Vector3(random.x, 0f, random.y);
+            var random = Random.insideUnitCircle.normalized * +_shark.PatrolRange * .5f;
+            _target = new Vector3(random.x, 0f, random.y) + Player.Instance.transform.position;
+            if (_target.magnitude > _shark.PatrolRange) _target = _target.normalized * _shark.PatrolRange;
         }
 
         public void OnExit() => _timer = 0f;

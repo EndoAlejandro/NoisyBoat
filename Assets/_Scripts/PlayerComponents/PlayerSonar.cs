@@ -1,4 +1,5 @@
-﻿using Shapes;
+﻿using System;
+using Shapes;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -20,6 +21,7 @@ namespace PlayerComponents
         [SerializeField] private float _increaseDuration = .2f;
         [SerializeField] private float _decreaseSpeed = 1f;
         [SerializeField] private ThicknessSpace _thicknessSpace;
+        [SerializeField] private Color _color;
 
         private SonarDot[] _dots;
         private InputReader _input;
@@ -29,11 +31,18 @@ namespace PlayerComponents
 
         private float AngleStep => 360f / _linesCount;
 
+        private void OnValidate() => InitDots();
+
         private void Awake()
         {
             _input = new InputReader();
             _input.Enable();
 
+            InitDots();
+        }
+
+        private void InitDots()
+        {
             _dots = new SonarDot[_linesCount];
 
             for (int i = 0; i < _linesCount; i++)
@@ -90,7 +99,7 @@ namespace PlayerComponents
             foreach (SonarDot sonarDot in _dots)
             {
                 var dotProduct = Vector3.Dot(sonarDot.Direction.normalized, direction.normalized);
-                if (dotProduct < .1f) continue;
+                if (dotProduct < .9f) continue;
                 sonarDot.Increase(dotProduct);
             }
         }
@@ -107,7 +116,7 @@ namespace PlayerComponents
 
                 foreach (SonarDot sonarDot in _dots)
                 {
-                    Draw.Line(sonarDot.Position, sonarDot.Position + sonarDot.Direction * sonarDot.CurrentSize, Color.pink);
+                    Draw.Line(sonarDot.Position, sonarDot.Position + sonarDot.Direction * sonarDot.CurrentSize, _color);
                 }
             }
         }

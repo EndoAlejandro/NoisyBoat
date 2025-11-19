@@ -1,6 +1,7 @@
 ﻿using PlayerComponents;
 using Shapes;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public abstract class SonarImmediateDrawer : ImmediateModeShapeDrawer
 {
@@ -8,7 +9,7 @@ public abstract class SonarImmediateDrawer : ImmediateModeShapeDrawer
     [SerializeField, ColorUsage(true, false)]
     protected Color _baseColor;
 
-    [SerializeField] protected float _range;
+    [FormerlySerializedAs("_range")] [SerializeField] protected float _detectionRange;
     [SerializeField] private float _debugOffset = 2f;
 
     [SerializeField] private AudioSource _source;
@@ -18,7 +19,7 @@ public abstract class SonarImmediateDrawer : ImmediateModeShapeDrawer
     protected virtual void Update()
     {
         var distance = Vector3.Distance(Player.Instance.transform.position, transform.position);
-        alpha = 1f - distance / _range;
+        alpha = 1f - distance / _detectionRange;
         alpha = Mathf.Clamp(alpha, 0f, 1f);
     }
 

@@ -25,7 +25,10 @@ namespace Enemies
             _shark.Move(direction.normalized);
         }
 
-        public void OnEnter() { }
+        public void OnEnter()
+        {
+            _shark.SetState(isChasing: true);
+        }
 
         public void OnExit() { }
     }

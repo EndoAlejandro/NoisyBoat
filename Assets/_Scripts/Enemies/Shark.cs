@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DG.Tweening;
 using PlayerComponents;
 using Shapes;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine.Serialization;
 
 namespace Enemies
 {
-    public class Shark : ImmediateModeShapeDrawer
+    public class Shark : SonarImmediateDrawer
     {
         public Transform PlayerTransform { get; private set; }
 
@@ -20,25 +21,25 @@ namespace Enemies
         [SerializeField] private float _deceleration = 20f;
 
         [Header("Visuals")]
-        [ColorUsage(true, false)] [SerializeField]
-        private Color _color;
-
         [SerializeField] private AnimationCurve _sizeCurve;
 
         [FormerlySerializedAs("_revert")] [SerializeField]
         private bool _reverseCurve;
-
         [SerializeField] private int _nodesAmount = 10;
-
         [SerializeField] private float _nodeFollowSpeed = 1f;
-
         [SerializeField] private float _nodeMaxRadius = 1f;
+        
+        [SerializeField, ColorUsage(true)] private Color _idleColor;
+        [SerializeField, ColorUsage(true)] private Color _chaseColor;
+
+        [field: SerializeField] public float PatrolRange { get; private set; } = 50f;
 
         private SphereCollider _collider;
         private Rigidbody _rigidbody;
         private List<SharkNode> _nodes;
 
         private Collider[] _results;
+        private Vector3 _initialPosition;
 
         private void Awake()
         {
@@ -47,6 +48,8 @@ namespace Enemies
 
             _nodes = new List<SharkNode>();
             _results = new Collider[20];
+            
+            _initialPosition = Vector3.zero;
         }
 
         private void OnValidate()
@@ -67,12 +70,13 @@ namespace Enemies
                 if (i > 0) node.SetHead(_nodes[^1]);
                 _nodes.Add(node);
             }
-            
+
             _collider.radius = GetRadius(0);
         }
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
             CheckDistance();
             SeekPlayer();
         }
@@ -119,7 +123,7 @@ namespace Enemies
         private float GetRadius(int i)
         {
             var normalizedValue = _reverseCurve ? 1 - i / (float)_nodes.Count : i / (float)_nodes.Count;
-            var radius = _sizeCurve.Evaluate(normalizedValue);
+            var radius = _sizeCurve.Evaluate(normalizedValue) * _nodeMaxRadius;
             return radius;
         }
 
@@ -142,6 +146,16 @@ namespace Enemies
             }
         }
 
+        public void SetState(bool isChasing)
+        {
+            float i = 0f;
+            DOTween.To(() => i, x =>
+            {
+                _baseColor = isChasing ? Color.Lerp(_idleColor, _chaseColor, i) : Color.Lerp(_chaseColor, _idleColor, i);
+                i = x;
+            }, 1f, 1f);
+        }
+
         public override void DrawShapes(Camera cam)
         {
             using (Draw.Command(cam))
@@ -154,7 +168,8 @@ namespace Enemies
                 {
                     SharkNode node = _nodes[i];
                     var radius = GetRadius(i);
-                    Draw.Sphere(node.Position, radius, _color);
+                    _baseColor.a = Mathf.Min(1f, alpha + .5f);
+                    Draw.Sphere(node.Position, radius, _baseColor);
                 }
             }
         }
@@ -163,6 +178,9 @@ namespace Enemies
         {
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position, _playerDetectionRadius);
+            
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(_initialPosition, PatrolRange);
         }
     }
 }

@@ -99,7 +99,7 @@ public class Target : SonarImmediateDrawer
             Draw.Matrix = transform.localToWorldMatrix;
 
             var distance = Vector3.Distance(Player.Instance.transform.position, transform.position);
-            _text.SetText((distance / _range).ToString("0.000"));
+            _text.SetText((distance / _detectionRange).ToString("0.000"));
 
             foreach (TargetWaves wave in _waves.Where(w => w.IsAnimating).Select(w => w))
             {
