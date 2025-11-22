@@ -9,7 +9,7 @@ public class Sonar : ImmediateModeShapeDrawer
 {
     public static Sonar Instance { get; private set; }
 
-    public static event Action<Transform> OnTargetFound;
+    public static event Action<SonarImmediateDrawer> OnTargetFound;
 
     [Header("Sonar")]
     [SerializeField] private float _radius = 50f;
@@ -26,6 +26,7 @@ public class Sonar : ImmediateModeShapeDrawer
 
     private SphereCollider _collider;
     private float _currentSize;
+    private bool _beaconFound;
 
     private void Awake()
     {
@@ -38,13 +39,21 @@ public class Sonar : ImmediateModeShapeDrawer
         Instance = this;
 
         _collider = GetComponent<SphereCollider>();
+        _results = new Transform[30];
     }
+
+    private Transform[] _results;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.TryGetComponent(out SonarImmediateDrawer sonarDrawer)) return;
+        if (!other.TryGetComponent(out SonarImmediateDrawer sonarDrawer) || !sonarDrawer.CanBeDetected) return;
+        if (sonarDrawer is Beacon)
+        {
+            if (_beaconFound) return;
+            _beaconFound = true;
+        }
         sonarDrawer.Detect();
-        OnTargetFound?.Invoke(sonarDrawer.transform);
+        OnTargetFound?.Invoke(sonarDrawer);
     }
 
     public override void DrawShapes(Camera cam)
@@ -101,5 +110,6 @@ public class Sonar : ImmediateModeShapeDrawer
         _currentSize = 0f;
         _collider.radius = 0f;
         _collider.enabled = false;
+        _beaconFound = false;
     }
 }

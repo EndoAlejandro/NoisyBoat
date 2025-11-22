@@ -1,16 +1,17 @@
-using UnityEngine;
-
-public class Beacon : MonoBehaviour
+public class Beacon : SonarImmediateDrawer
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public static Beacon Instance { get; private set; }
 
-    // Update is called once per frame
-    void Update()
+    protected override void Awake()
     {
-        
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+
+        base.Awake();
     }
 }

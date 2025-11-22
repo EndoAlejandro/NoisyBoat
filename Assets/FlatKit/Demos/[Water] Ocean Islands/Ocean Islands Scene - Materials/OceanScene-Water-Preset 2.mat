@@ -89,24 +89,24 @@ Material:
     - _CameraDistanceFadeClose: 0
     - _CameraDistanceFadeFar: 10
     - _ColorMode: 0
-    - _CrestSharpness: 0.32
-    - _CrestSize: 0.76
+    - _CrestSharpness: 0
+    - _CrestSize: 0
     - _Cull: 2
     - _Cutoff: 0.5
     - _Depth: 100
     - _DstBlend: 0
     - _EnvironmentReflections: 1
     - _FadeDistance: 0.07
-    - _FoamAmount: 0.32
-    - _FoamDepth: 0.09
-    - _FoamDirection: -0.12
+    - _FoamAmount: 1.2
+    - _FoamDepth: 1
+    - _FoamDirection: 0
     - _FoamFromTexture: 1
     - _FoamMode: 1
-    - _FoamNoiseAmount: 1
+    - _FoamNoiseAmount: 0.5
     - _FoamProcedural: 1
-    - _FoamScale: 0.18
-    - _FoamSharpness: 0.72
-    - _FoamSpeed: 0.26
+    - _FoamScale: 1
+    - _FoamSharpness: 0.179
+    - _FoamSpeed: 0.1
     - _FoamStretchX: 1
     - _FoamStretchY: 1
     - _FoamTexture: 1
@@ -138,22 +138,22 @@ Material:
     - _UvFadeY: 0.1
     - _WaterClearness: 0.15
     - _WaterDepth: 20.22
-    - _WaveAmplitude: 0.25
-    - _WaveDirection: 0
+    - _WaveAmplitude: 0
+    - _WaveDirection: -1
     - _WaveFrequency: 50
     - _WaveMode: 2
-    - _WaveNoise: 0.01
-    - _WaveSpeed: 0.5
+    - _WaveNoise: 0
+    - _WaveSpeed: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 0, g: 1, b: 0.7287984, a: 1}
-    - _ColorDeep: {r: 0.7971698, g: 0.9898585, b: 1, a: 1}
+    - _ColorDeep: {r: 0.4481132, g: 0.96753603, b: 1, a: 1}
     - _ColorShallow: {r: 0, g: 0.7019608, b: 0.86274517, a: 1}
-    - _CrestColor: {r: 0.70354223, g: 0.9354157, b: 0.9622641, a: 0.21176471}
+    - _CrestColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FoamColor: {r: 1, g: 1, b: 1, a: 0.7176471}
+    - _FoamColor: {r: 0, g: 0.7019608, b: 0.86274517, a: 1}
     - _FoamStretch: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []

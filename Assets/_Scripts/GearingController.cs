@@ -23,8 +23,28 @@ public class GearingController : MonoBehaviour
 
     private void Start()
     {
+        Target.OnGearingStarted += TargetOnGearingStarted;
+        Target.OnGearingFinished += TargetOnGearingFinished;
+
         HideGearing();
         _progressDisc.AngRadiansStart = 0f;
+    }
+
+    private void OnDestroy()
+    {
+        Target.OnGearingStarted -= TargetOnGearingStarted;
+        Target.OnGearingFinished -= TargetOnGearingFinished;
+    }
+
+    private void TargetOnGearingFinished()
+    {
+        HideGearing();
+    }
+
+    private void TargetOnGearingStarted(float gearingTime)
+    {
+        _gearingTime = gearingTime;
+        DisplayGearing();
     }
 
     private void Update()
@@ -44,7 +64,7 @@ public class GearingController : MonoBehaviour
 
         if (_gearingTimer >= _gearingTime)
         {
-            HideGearing();
+           //  HideGearing();
         }
     }
 

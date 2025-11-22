@@ -1,5 +1,4 @@
-﻿using PlayerComponents;
-using StateMachineComponents;
+﻿using StateMachineComponents;
 using UnityEngine;
 
 namespace Enemies
@@ -14,21 +13,20 @@ namespace Enemies
         private Vector3 _target;
         private float _timer;
 
+        private float _growlTimer;
+
         public SharkIdleState(Shark shark, float idleTime)
         {
             _shark = shark;
             _idleTime = idleTime;
         }
 
-        public void Tick() { }
+        public void Tick() => Growl();
 
         public void FixedTick()
         {
-            if (Vector3.Distance(_shark.transform.position, _target) < 1f)
-            {
-                _timer -= Time.fixedDeltaTime;
-                if (_timer <= 0f) ResetTarget();
-            }
+            _timer -= Time.fixedDeltaTime;
+            if (_timer <= 0f) ResetTarget();
             else
             {
                 var direction = _target - _shark.transform.position;
@@ -42,14 +40,29 @@ namespace Enemies
             _target = _shark.transform.position;
         }
 
+        public void OnExit()
+        {
+            _timer = 0f;
+            _shark.StopGrowl();
+        }
+
         private void ResetTarget()
         {
             _timer = _idleTime;
-            var random = Random.insideUnitCircle.normalized * +_shark.PatrolRange * .5f;
-            _target = new Vector3(random.x, 0f, random.y) + Player.Instance.transform.position;
-            if (_target.magnitude > _shark.PatrolRange) _target = _target.normalized * _shark.PatrolRange;
+            var random = Random.insideUnitCircle.normalized * _shark.PatrolRange;
+            var pivot = _shark.Player?.transform.position ?? Vector3.zero;
+            _target = new Vector3(random.x, 0f, random.y) + pivot;
+
+            if (_target.magnitude > 150f) _target = _target.normalized * 140f;
         }
 
-        public void OnExit() => _timer = 0f;
+        private void Growl()
+        {
+            _growlTimer -= Time.deltaTime;
+            if (_growlTimer > 0f) return;
+
+            _growlTimer = 20f;
+            _shark.Growl();
+        }
     }
 }

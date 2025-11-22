@@ -359,16 +359,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Target
   useCullingMasks: 0
-  _baseColor: {r: 0.9803922, g: 0.4156863, b: 0.6666667, a: 1}
-  _detectionRange: 10
+  <BaseColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  _detectionRange: 20
   _debugOffset: 2
   _source: {fileID: 4889106130869427138}
-  _text: {fileID: 9014945279259558928}
-  _bubbleSize: {x: 0.2, y: 0.5}
-  _bubbleFrequency: {x: 0.2, y: 0.5}
+  _turretPrefab: {fileID: 236852895162143520, guid: 3b4ccc9baaea9c14590ae16f239c4cac, type: 3}
+  _gearingTime: 7.5
+  _bubbleSize: {x: 0.3, y: 0.6}
+  _bubbleFrequency: {x: 0.3, y: 0.6}
   _bubbleDuration: {x: 2, y: 5}
-  _waveFrequency: {x: 3, y: 7}
-  _maxWaveSize: 2.5
+  _waveFrequency: {x: 4, y: 7}
+  _maxWaveSize: 3
   _waveDuration: 10
 --- !u!33 &3001912448258729623
 MeshFilter:
@@ -445,7 +446,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 1.5
+  m_Radius: 3.5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &3765237135533878071
 Rigidbody:
@@ -457,7 +458,7 @@ Rigidbody:
   serializedVersion: 5
   m_Mass: 1
   m_LinearDamping: 0
-  m_AngularDamping: 0.05
+  m_AngularDamping: 0
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -470,7 +471,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
+  m_IsKinematic: 0
+  m_Interpolate: 1
   m_Constraints: 126
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2

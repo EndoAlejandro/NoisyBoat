@@ -13,15 +13,18 @@ namespace PlayerComponents
 
         [Space]
         [SerializeField, Range(1, 360)] private int _linesCount = 12;
+
         [SerializeField] private float _radius = 2f;
         [SerializeField] private float _maxSize = 2.1f;
 
         [Header("Visuals")]
         [SerializeField, Range(0f, 10f)] private float _thickness = 4f;
+
         [SerializeField] private float _increaseDuration = .2f;
         [SerializeField] private float _decreaseSpeed = 1f;
         [SerializeField] private ThicknessSpace _thicknessSpace;
         [SerializeField] private Color _color;
+        [SerializeField] private Color _targetColor;
 
         private SonarDot[] _dots;
         private InputReader _input;
@@ -59,14 +62,13 @@ namespace PlayerComponents
             Sonar.OnTargetFound += SonarOnTargetFound;
         }
 
-        private void SonarOnTargetFound(Transform target)
+        private void SonarOnTargetFound(SonarImmediateDrawer target)
         {
-            TriggerSonar(target.position - transform.position);
+            TriggerSonar(target.transform.position - transform.position);
         }
 
         private void Update()
         {
-            
             foreach (SonarDot sonarDot in _dots) sonarDot.Tick();
             SonarNoise();
             SonarTarget();
@@ -114,9 +116,15 @@ namespace PlayerComponents
 
                 Draw.Matrix = transform.localToWorldMatrix;
 
+                var direction = (Beacon.Instance.transform.position.With(y: 0f) - transform.position.With(y: 0)).normalized;
+
+
                 foreach (SonarDot sonarDot in _dots)
                 {
-                    Draw.Line(sonarDot.Position, sonarDot.Position + sonarDot.Direction * sonarDot.CurrentSize, _color);
+                    var dot = Vector3.Dot(sonarDot.Direction, direction);
+                    dot = dot > .99f ? dot : 0f;
+                    var color = Color.Lerp(_color, _targetColor, dot);
+                    Draw.Line(sonarDot.Position, sonarDot.Position + sonarDot.Direction * sonarDot.CurrentSize, color);
                 }
             }
         }

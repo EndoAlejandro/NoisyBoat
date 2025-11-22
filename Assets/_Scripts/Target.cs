@@ -1,13 +1,20 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using PlayerComponents;
 using Shapes;
 using TMPro;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Target : SonarImmediateDrawer
 {
-    [SerializeField] private TMP_Text _text;
+    public static event Action<float> OnGearingStarted;
+
+    public static event Action OnGearingFinished;
+
+    [SerializeField] private Turret _turretPrefab;
+    [SerializeField] private float _gearingTime;
 
     [Header("Bubble")]
     [SerializeField] private Vector2 _bubbleSize;
@@ -24,11 +31,15 @@ public class Target : SonarImmediateDrawer
     private List<TargetWaves> _waves;
     private List<TargetWaves> _bubbles;
 
+    private bool _playerInRange;
+    private bool _isGearing;
+    private float _timer;
     private float _waveTimer;
     private float _bubbleTimer;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         _waves = new List<TargetWaves>();
         _bubbles = new List<TargetWaves>();
     }
@@ -39,6 +50,49 @@ public class Target : SonarImmediateDrawer
 
         DrawWave();
         DrawBubble();
+
+        if (_isGearing)
+        {
+            if (Player is { CanGear: false })
+            {
+                SetGearing(false);
+                return;
+            }
+
+            _timer -= Time.deltaTime;
+
+            if (_timer <= 0f)
+            {
+                OnGearingFinished?.Invoke();
+                Instantiate(_turretPrefab, transform.position, Quaternion.identity);
+                Destroy(gameObject);
+            }
+        }
+        else if (_playerInRange && Player is { CanGear: true })
+        {
+            SetGearing(true);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!other.TryGetComponent(out Player _)) return;
+        _playerInRange = true;
+    }
+
+    private void SetGearing(bool isGearing)
+    {
+        if (_isGearing && !isGearing) OnGearingFinished?.Invoke();
+        if (!_isGearing && isGearing) OnGearingStarted?.Invoke(_gearingTime);
+
+        _isGearing = isGearing;
+        _timer = _gearingTime;
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (!other.TryGetComponent(out Player _)) return;
+        _playerInRange = false;
     }
 
     private void DrawWave()
@@ -97,13 +151,10 @@ public class Target : SonarImmediateDrawer
             Draw.Thickness = .1f;
 
             Draw.Matrix = transform.localToWorldMatrix;
-
-            var distance = Vector3.Distance(Player.Instance.transform.position, transform.position);
-            _text.SetText((distance / _detectionRange).ToString("0.000"));
+            Color color = BaseColor;
 
             foreach (TargetWaves wave in _waves.Where(w => w.IsAnimating).Select(w => w))
             {
-                Color color = _baseColor;
                 color.a = Mathf.Min(alpha, wave.CurrentAlpha);
                 Draw.Ring(Vector3.zero,
                     Quaternion.Euler(Vector3.right * 90f),
@@ -113,7 +164,6 @@ public class Target : SonarImmediateDrawer
 
             foreach (TargetWaves bubble in _bubbles.Where(w => w.IsAnimating).Select(w => w))
             {
-                Color color = _baseColor;
                 color.a = Mathf.Min(alpha, bubble.CurrentAlpha);
                 Draw.Disc(bubble.Position,
                     Quaternion.Euler(Vector3.right * 90f),

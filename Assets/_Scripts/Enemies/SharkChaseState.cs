@@ -16,20 +16,24 @@ namespace Enemies
 
         public void FixedTick()
         {
-            if(_shark.PlayerTransform == null) return;
-            
-            if (Vector3.Distance(_shark.transform.position, _shark.PlayerTransform.position) < 1f)
+            if (_shark.Player == null) return;
+
+            if (Vector3.Distance(_shark.transform.position, _shark.Player.transform.position) < 1f)
                 return;
 
-            var direction = _shark.PlayerTransform.position - _shark.transform.position;
+            var direction = _shark.Player.transform.position - _shark.transform.position;
             _shark.Move(direction.normalized);
         }
 
         public void OnEnter()
         {
+            _shark.Chase();
             _shark.SetState(isChasing: true);
         }
 
-        public void OnExit() { }
+        public void OnExit()
+        {
+            _shark.PlayerSafe();
+        }
     }
 }
