@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 public class EnemyManager : MonoBehaviour
 {
-    public static event Action AllSharksCaptured;
+    public static event Action OnAllSharksCaptured;
 
     [SerializeField] private Shark _sharkPrefab;
     [SerializeField] private float _spawnRange = 25f;
@@ -38,13 +38,13 @@ public class EnemyManager : MonoBehaviour
         if (_sharksToCapture > 0)
         {
             var random2 = Random.insideUnitCircle;
-            var position = random2.normalized * _spawnRange;
+            var position = new Vector3(random2.x, 0f, random2.y).normalized * _spawnRange;
             var shark = Instantiate(_sharkPrefab, position, Quaternion.identity);
             shark.Setup(_player);
         }
         else
         {
-            AllSharksCaptured?.Invoke();
+            OnAllSharksCaptured?.Invoke();
         }
     }
 

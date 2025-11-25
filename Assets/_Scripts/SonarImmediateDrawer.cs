@@ -1,8 +1,6 @@
-﻿using System;
-using PlayerComponents;
+﻿using PlayerComponents;
 using Shapes;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public abstract class SonarImmediateDrawer : ImmediateModeShapeDrawer
 {
@@ -47,7 +45,11 @@ public abstract class SonarImmediateDrawer : ImmediateModeShapeDrawer
         alpha = Mathf.Clamp(alpha, 0f, 1f);
     }
 
-    public void Detect() => _source.Play();
+    public void Detect()
+    {
+        _source.Stop();
+        _source.Play();
+    }
 
     private void OnDrawGizmos()
     {

@@ -62,6 +62,12 @@ namespace PlayerComponents
             Sonar.OnTargetFound += SonarOnTargetFound;
         }
 
+        private void OnDestroy()
+        {
+            _input.Disable();
+            Sonar.OnTargetFound -= SonarOnTargetFound;
+        }
+
         private void SonarOnTargetFound(SonarImmediateDrawer target)
         {
             TriggerSonar(target.transform.position - transform.position);

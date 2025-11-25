@@ -108,7 +108,14 @@ namespace Enemies
             SeekPlayer();
         }
 
-        private void FixedUpdate() => UpdateNodes();
+        private void FixedUpdate()
+        {
+            if (_rigidbody.position.y != 0f)
+            {
+                _rigidbody.position = _rigidbody.position.With(y: 0f);
+            }
+            UpdateNodes();
+        }
 
         private void OnCollisionEnter(Collision other)
         {
@@ -125,6 +132,7 @@ namespace Enemies
         public void Growl()
         {
             _growlAudio.volume = 1f;
+            _growlAudio.Stop();
             _growlAudio.Play();
         }
 
@@ -248,6 +256,7 @@ namespace Enemies
         public void Scream()
         {
             if (_screamAudio.isPlaying) return;
+            _screamAudio.Stop();
             _screamAudio.Play();
         }
 

@@ -125,7 +125,7 @@ public class CameraController : MonoBehaviour
         TweenVignette(_baseVignette, .6f, .5f);
         TweenVignette(_chaseVignette, .6f, .5f);
         SetFollowTarget(null);
-        Invoke(nameof(Pause), 3f);
+        // Invoke(nameof(Pause), 3f);
     }
 
     private void Pause()

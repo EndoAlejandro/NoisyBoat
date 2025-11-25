@@ -26,12 +26,13 @@ public class Turret : SonarImmediateDrawer
     private void OnTriggerEnter(Collider other)
     {
         if (!CanBeDetected || !other.TryGetComponent(out Shark shark)) return;
-        CanBeDetected = false;
         _target = shark.transform;
         _line.enabled = true;
+        _laserAudio.Stop();
         _laserAudio.Play();
         DOTween.To(() => _area.Radius, x => _area.Radius = x, 0f, 5f)
-            .SetEase(Ease.OutSine);
+            .SetEase(Ease.OutSine)
+            .OnComplete(() => CanBeDetected = false);
     }
 
     protected override void Update()

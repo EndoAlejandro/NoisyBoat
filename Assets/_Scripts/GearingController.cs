@@ -80,6 +80,7 @@ public class GearingController : MonoBehaviour
     private void DisplayGearing()
     {
         _isGearing = true;
+        _gearingAudio.Stop();
         _gearingAudio.Play();
         _gearingAudio.DOFade(1f, _displayTime);
         _container.DOScale(Vector3.one, _displayTime)

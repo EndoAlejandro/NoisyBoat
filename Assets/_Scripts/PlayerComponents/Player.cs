@@ -62,7 +62,7 @@ namespace PlayerComponents
             _input.Enable();
             _rigidbody = GetComponent<Rigidbody>();
         }
-
+        
         private void Start()
         {
             _canTakeDamage = true;
@@ -172,6 +172,7 @@ namespace PlayerComponents
             var direction = transform.position - other;
             direction.y = 0f;
 
+            _hitAudio.Stop();
             _hitAudio.Play();
             OnTakeDamage?.Invoke();
             DamagePush(direction);
@@ -195,10 +196,12 @@ namespace PlayerComponents
             yield return new WaitForSeconds(.5f);
             _deathParticles.transform.SetParent(null);
             _deathParticles.transform.position = transform.position;
+            _deathParticles.Stop();
             _deathParticles.Play();
             
             _deathAudio.transform.SetParent(null);
             _deathAudio.transform.position = transform.position;
+            _deathAudio.Stop();
             _deathAudio.Play();
             OnDead?.Invoke();
             gameObject.SetActive(false);
@@ -235,6 +238,7 @@ namespace PlayerComponents
             }
             else if (!_isRunning && isMoving)
             {
+                _foamParticles.Stop();
                 _foamParticles.Play();
                 _isRunning = true;
                 if (_fadeAsync != null) StopCoroutine(_fadeAsync);

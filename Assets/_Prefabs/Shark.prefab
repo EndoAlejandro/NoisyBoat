@@ -137,7 +137,7 @@ MonoBehaviour:
   <NodeMaxRadius>k__BackingField: 7
   _idleColor: {r: 1, g: 1, b: 1, a: 1}
   _chaseColor: {r: 0.9803922, g: 0.4156863, b: 0.6666667, a: 1}
-  <PatrolRange>k__BackingField: 50
+  <PatrolRange>k__BackingField: 60
   _growlAudio: {fileID: 2491148320946671288}
   _chaseAudio: {fileID: 71629588228098458}
   _screamAudio: {fileID: 7724267833998084690}
@@ -249,7 +249,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 2307003321756211701, guid: 4579266e4d12f4a4f830306a7bd9d298, type: 2}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: ff3d42e3494ce1643aa988e1fd470854, type: 3}
+  m_Resource: {fileID: 8300000, guid: 550e1c41487de794aabe27a23bd85bbd, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.75
   m_Pitch: 1
@@ -263,7 +263,7 @@ AudioSource:
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
-  BypassEffects: 0
+  BypassEffects: 1
   BypassListenerEffects: 0
   BypassReverbZones: 0
   rolloffCustomCurve:

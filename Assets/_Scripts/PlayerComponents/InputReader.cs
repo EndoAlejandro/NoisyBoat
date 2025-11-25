@@ -18,6 +18,10 @@ namespace PlayerComponents
         private readonly BoatInputActions _input = new BoatInputActions();
 
         public void Enable() => _input.Boat.Enable();
-        public void Disable() => _input.Boat.Disable();
+        public void Disable()
+        {
+            _input.Boat.Disable();
+            _input.Dispose();
+        }
     }
 }
