@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using RenderGraphUtils = UnityEngine.Rendering.RenderGraphModule.Util.RenderGraphUtils;
 #if UNITY_6000_0_OR_NEWER
 using System;
 using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.RenderGraphModule.Util;
-using RenderGraphUtils = UnityEngine.Rendering.RenderGraphModule.Util.RenderGraphUtils;
 #endif
 
 public class ScreenRenderPass : ScriptableRenderPass {
@@ -99,19 +99,13 @@ public class ScreenRenderPass : ScriptableRenderPass {
             return;
         }
 
-#if UNITY_2022_3_OR_NEWER
-        CommandBuffer cmd = renderingData.commandBuffer;
-#else
         CommandBuffer cmd = CommandBufferPool.Get();
-#endif
         var cameraData = renderingData.cameraData;
 
         using (new ProfilingScope(cmd, profilingSampler)) {
             if (requiresColor) {
 #if UNITY_2022_3_OR_NEWER
-                var source = passData.isBeforeTransparents
-                    ? cameraData.renderer.GetCameraColorBackBuffer(cmd)
-                    : cameraData.renderer.cameraColorTargetHandle;
+                var source = cameraData.renderer.cameraColorTargetHandle;
                 Blitter.BlitCameraTexture(cmd, source, copiedColor);
 #else
                 var source = cameraData.renderer.cameraColorTarget;
@@ -122,7 +116,7 @@ public class ScreenRenderPass : ScriptableRenderPass {
             }
 
 #if UNITY_2022_3_OR_NEWER
-            CoreUtils.SetRenderTarget(cmd, cameraData.renderer.GetCameraColorBackBuffer(cmd));
+            CoreUtils.SetRenderTarget(cmd, cameraData.renderer.cameraColorTargetHandle);
 #else
             CoreUtils.SetRenderTarget(cmd, cameraData.renderer.cameraColorTarget);
 #endif
@@ -130,6 +124,8 @@ public class ScreenRenderPass : ScriptableRenderPass {
             context.ExecuteCommandBuffer(cmd);
             cmd.Clear();
         }
+
+        CommandBufferPool.Release(cmd);
     }
 
     private class PassData {
