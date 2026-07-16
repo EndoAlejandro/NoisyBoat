@@ -232,6 +232,17 @@ public partial class @BoatInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Sonar"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""99fd63b7-e3b4-4ff8-956b-70daa533f396"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sonar"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
