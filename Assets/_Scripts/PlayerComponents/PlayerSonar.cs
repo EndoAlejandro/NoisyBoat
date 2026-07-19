@@ -1,5 +1,4 @@
-﻿using System;
-using Shapes;
+﻿using Shapes;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -27,7 +26,7 @@ namespace PlayerComponents
         [SerializeField] private Color _targetColor;
 
         private SonarDot[] _dots;
-        private InputReader _input;
+        //private InputReader _input;
         private float _noiseTimer;
 
         private bool _isSonarActive;
@@ -38,8 +37,8 @@ namespace PlayerComponents
 
         private void Awake()
         {
-            _input = new InputReader();
-            _input.Enable();
+            //_input = new InputReader();
+            InputReader.Enable();
 
             InitDots();
         }
@@ -64,7 +63,7 @@ namespace PlayerComponents
 
         private void OnDestroy()
         {
-            _input.Disable();
+            InputReader.Disable();
             Sonar.OnTargetFound -= SonarOnTargetFound;
         }
 
@@ -82,7 +81,7 @@ namespace PlayerComponents
 
         private void SonarTarget()
         {
-            if (_isSonarActive || !_input.Sonar) return;
+            if (_isSonarActive || !InputReader.Sonar) return;
             _isSonarActive = true;
             Sonar.Instance.Activate(transform.position, () => _isSonarActive = false);
         }
@@ -91,7 +90,7 @@ namespace PlayerComponents
         {
             _noiseTimer -= Time.deltaTime;
 
-            if (_noiseTimer > 0f || _input.Move.magnitude < .1f) return;
+            if (_noiseTimer > 0f || InputReader.Move.magnitude < .1f) return;
 
             _noiseTimer = _noiseCooldown;
             for (int i = 0; i < 2; i++)

@@ -2,26 +2,27 @@
 
 namespace PlayerComponents
 {
-    public class InputReader
+    public static class InputReader
     {
-        public bool Sonar => _input?.Boat.Sonar.IsPressed() ?? false;
+        public static bool Sonar => Input.Boat.Sonar.IsPressed();
 
-        public Vector3 Move
+        public static Vector3 Move
         {
             get
             {
-                Vector2 input = _input?.Boat.Move.ReadValue<Vector2>() ?? Vector2.zero;
+                Vector2 input = Input?.Boat.Move.ReadValue<Vector2>() ?? Vector2.zero;
                 return new Vector3(input.x, 0f, input.y);
             }
         }
 
-        private readonly BoatInputActions _input = new BoatInputActions();
+        private static readonly BoatInputActions Input = new BoatInputActions();
 
-        public void Enable() => _input.Boat.Enable();
-        public void Disable()
+        public static void Enable() => Input.Boat.Enable();
+        
+        public static void Disable()
         {
-            _input.Boat.Disable();
-            _input.Dispose();
+            Input.Boat.Disable();
+            Input.Dispose();
         }
     }
 }

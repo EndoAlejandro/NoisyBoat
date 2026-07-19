@@ -1,6 +1,7 @@
 using System;
 using Enemies;
 using PlayerComponents;
+using UI;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -37,6 +38,7 @@ public class EnemyManager : MonoBehaviour
 
         if (_sharksToCapture > 0)
         {
+            InGameMessages.Instance.ShowMessage(3 - _sharksToCapture);
             var random2 = Random.insideUnitCircle;
             var position = new Vector3(random2.x, 0f, random2.y).normalized * _spawnRange;
             var shark = Instantiate(_sharkPrefab, position, Quaternion.identity);

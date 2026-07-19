@@ -12,6 +12,7 @@ public class CameraController : MonoBehaviour
     public static CameraController Instance { get; private set; }
 
     [SerializeField] private CinemachineCamera _mainCamera;
+    [SerializeField] private CinemachineCamera _cinemachineGroup;
     [SerializeField] private CinemachineTargetGroup _groupCamera;
     [SerializeField] private Volume _baseVolume;
     [SerializeField] private CinemachineImpulseSource _impulse;
@@ -174,6 +175,7 @@ public class CameraController : MonoBehaviour
     private void SetGroupCamera(bool state, Transform other)
     {
         _groupCamera.Targets[1].Object = other;
-        _groupCamera.gameObject.SetActive(state);
+        // _groupCamera.gameObject.SetActive(state);
+        _cinemachineGroup.gameObject.SetActive(state);
     }
 }

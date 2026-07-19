@@ -45,7 +45,7 @@ namespace PlayerComponents
         [SerializeField] private ParticleSystem _deathParticles;
 
         private Rigidbody _rigidbody;
-        private InputReader _input;
+        //private InputReader _input;
         private Coroutine _fadeAsync;
 
         private Vector2 _direction;
@@ -58,8 +58,8 @@ namespace PlayerComponents
 
         private void Awake()
         {
-            _input = new InputReader();
-            _input.Enable();
+            //_input = new InputReader();
+            InputReader.Enable();
             _rigidbody = GetComponent<Rigidbody>();
         }
         
@@ -79,7 +79,7 @@ namespace PlayerComponents
             // _rigidbody.maxLinearVelocity = _maxSpeed;
             //_rigidbody.maxAngularVelocity = _maxAngularSpeed;
 
-            var movement = transform.forward * _input.Move.z + transform.right * _input.Move.x;
+            var movement = transform.forward * InputReader.Move.z + transform.right * InputReader.Move.x;
             var isMoving = movement.magnitude > .05f;
             RunningCheck(isMoving);
             Movement();
@@ -99,13 +99,13 @@ namespace PlayerComponents
 
         private void Movement()
         {
-            if (_input.Move.z > .05f)
+            if (InputReader.Move.z > .05f)
             {
-                _rigidbody.AddForce(transform.forward * (_acceleration * _input.Move.z), ForceMode.VelocityChange);
+                _rigidbody.AddForce(transform.forward * (_acceleration * InputReader.Move.z), ForceMode.VelocityChange);
             }
-            else if (_input.Move.z < -.05f)
+            else if (InputReader.Move.z < -.05f)
             {
-                _rigidbody.AddForce(transform.forward * (.5f * _acceleration * _input.Move.z), ForceMode.VelocityChange);
+                _rigidbody.AddForce(transform.forward * (.5f * _acceleration * InputReader.Move.z), ForceMode.VelocityChange);
             }
 
             if (_canTakeDamage)
@@ -124,7 +124,7 @@ namespace PlayerComponents
 
         private void Rotation(Vector3 targetDirection)
         {
-            if (Mathf.Abs(_input.Move.x) < .05f) return;
+            if (Mathf.Abs(InputReader.Move.x) < .05f) return;
 
             Vector3 directionToLook = targetDirection.normalized;
 
@@ -192,7 +192,7 @@ namespace PlayerComponents
         private IEnumerator DeathAsync()
         {
             _isDeath = true;
-            _input.Disable();
+            InputReader.Disable();
             yield return new WaitForSeconds(.5f);
             _deathParticles.transform.SetParent(null);
             _deathParticles.transform.position = transform.position;
@@ -225,7 +225,7 @@ namespace PlayerComponents
             OnHeal?.Invoke();
         }
 
-        private void OnDestroy() => _input?.Disable();
+        private void OnDestroy() => InputReader.Disable();
 
         private void RunningCheck(bool isMoving)
         {

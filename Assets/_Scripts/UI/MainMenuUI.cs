@@ -1,10 +1,13 @@
-﻿using PlayerComponents;
+﻿using System;
+using PlayerComponents;
 using UnityEngine;
 
 namespace UI
 {
     public class MainMenuUI : BaseUI
     {
+        public static event Action GameStarted;
+        
         [Header("Main Menu")]
         [SerializeField] private Player _playerPrefab;
 
@@ -21,6 +24,10 @@ namespace UI
         // Tutorial
         protected override void RightButtonOnClick() => Hide(() => _tutorial.Show());
 
-        private void InstantiatePlayer() => Instantiate(_playerPrefab, _spawnPoint.position, Quaternion.identity);
+        private void InstantiatePlayer()
+        {
+            Instantiate(_playerPrefab, _spawnPoint.position, Quaternion.identity);
+            GameStarted?.Invoke();
+        }
     }
 }
